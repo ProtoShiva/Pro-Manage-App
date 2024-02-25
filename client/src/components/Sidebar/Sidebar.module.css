@@ -1,0 +1,17 @@
+.sideicons {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.logo {
+  margin-left: 8px;
+  margin-right: 10px;
+}
+
+.container p {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 15px;
+}

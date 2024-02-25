@@ -1,0 +1,15 @@
+.main {
+  position: fixed;
+  inset: 0px;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup_inner {
+  background-color: #fff;
+  max-width: 540px;
+  padding: 32px;
+  width: 100%;
+}
