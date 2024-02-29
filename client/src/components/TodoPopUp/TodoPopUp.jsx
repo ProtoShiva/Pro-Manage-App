@@ -1,44 +1,162 @@
-import React from "react"
+import { useContext, useState } from "react"
 import Styles from "./TodoPopUp.module.css"
+import { UserContext } from "../../context/UserContext"
 import { FaPlus } from "react-icons/fa6"
-const TodoPopUp = ({ Onclose, visible }) => {
-  if (!visible) {
+import { MdDelete } from "react-icons/md"
+import axios from "axios"
+
+const TodoPopUp = () => {
+  const {
+    showCheckPopup,
+    setShowCheckPopup,
+    setTitle,
+    setPriority,
+    setDuedate,
+    setInputs,
+    title,
+    priority,
+    duedate,
+    inputs,
+    setSelectedId,
+    selectedId
+  } = useContext(UserContext)
+  // const [title, setTitle] = useState("")
+  // const [priority, setPriority] = useState("")
+  // const [duedate, setDuedate] = useState(null)
+  // const [inputs, setInputs] = useState([])
+
+  if (!showCheckPopup) {
     return null
   }
+  const addInput = () => {
+    const newInput = {
+      id: Math.random().toString(36).substring(2, 15),
+      value: "",
+      checked: false
+    }
+
+    setInputs([...inputs, newInput])
+  }
+  const handleCheckboxChange = (event, inputId) => {
+    setInputs((prevInputs) =>
+      prevInputs.map((input) =>
+        input.id === inputId
+          ? { ...input, checked: event.target.checked }
+          : input
+      )
+    )
+  }
+  const handleChange = (event, inputId) => {
+    setInputs((prevInputs) =>
+      prevInputs.map((input) =>
+        input.id === inputId
+          ? {
+              ...input,
+              value: event.target.value
+            }
+          : input
+      )
+    )
+  }
+
+  const addNewCard = () => {
+    if (selectedId) {
+      axios.put(`/card/${selectedId}`, {
+        title,
+        priority,
+        duedate,
+        inputs
+      })
+    } else {
+      axios.post("/cards", {
+        title,
+        priority,
+        duedate,
+        inputs
+      })
+    }
+
+    setSelectedId(null)
+    setShowCheckPopup(false)
+  }
+
   return (
     <div className={Styles.main}>
       <div className={Styles.popup_inner}>
         <div className={Styles.title}>
-          <p>Title</p>
-          <input type="text" placeholder="Enter Task Title" />
+          <p>
+            Title <span>*</span>
+          </p>
+          <input
+            type="text"
+            placeholder="Enter Task Title"
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </div>
         <div className={Styles.priority}>
-          <p>Select Priority</p>
-          <div>
-            <div></div>HIGH PRIORITY
+          <p>
+            Select Priority <span>*</span>
+          </p>
+          <div onClick={() => setPriority("HIGH PRIORITY")}>
+            <span>&bull;</span>HIGH PRIORITY
           </div>
-          <div>
-            <div></div>MODERATE PRIORITY
+          <div onClick={() => setPriority("MODERATE PRIORITY")}>
+            <span id={Styles.mop}>&bull;</span>MODERATE PRIORITY
           </div>
-          <div>
-            <div></div>LOW PRIORITY
+          <div onClick={() => setPriority("LOW PRIORITY")}>
+            <span id={Styles.lop}>&bull;</span>LOW PRIORITY
           </div>
         </div>
         <div className={Styles.checklist}>
-          <p>Chekclist (0/0)</p>
-          <div className={Styles.checkInput}>
-            <FaPlus />
-            <p>Add New</p>
+          <p>
+            Chekclist (0/0) <span>*</span>
+          </p>
+          <div>
+            <div className={Styles.checklist}>
+              {inputs.map((input) => (
+                <div className={Styles.inputs}>
+                  <div className={Styles.input_two}>
+                    <input
+                      type="checkbox"
+                      checked={input.checked}
+                      onChange={(event) =>
+                        handleCheckboxChange(event, input.id)
+                      }
+                    />
+                    <input
+                      key={input.id}
+                      type="text"
+                      value={input.value}
+                      onChange={(event) => handleChange(event, input.id)}
+                      placeholder="Enter value..."
+                    />
+                  </div>
+
+                  <MdDelete />
+                </div>
+              ))}
+            </div>
+            <div className={Styles.checkInput} onClick={addInput}>
+              <FaPlus />
+              <p>Add New</p>
+            </div>
           </div>
         </div>
         <div className={Styles.todo_footer}>
-          <input type="input" value="Select Due Date" />
-          <input type="input" value="Cancel" onClick={Onclose} />
-          <input type="input" value="Save" />
+          <div id={Styles.date}>
+            <input type="date" onChange={(e) => setDuedate(e.target.value)} />
+          </div>
+          <div>
+            <p id={Styles.cancel} onClick={() => setShowCheckPopup(false)}>
+              Cancel
+            </p>
+            <p id={Styles.save} onClick={addNewCard}>
+              Save
+            </p>
+          </div>
         </div>
       </div>
     </div>
   )
 }
-
 export default TodoPopUp

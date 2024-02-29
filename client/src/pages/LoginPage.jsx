@@ -1,20 +1,22 @@
 import Styles from "./Register.module.css"
 import axios from "axios"
-import { useState } from "react"
+import { useState, useContext } from "react"
 import { Navigate, Link } from "react-router-dom"
 import { MdOutlineMailOutline } from "react-icons/md"
 import { MdOutlineLock } from "react-icons/md"
 import { MdOutlineRemoveRedEye } from "react-icons/md"
+import { UserContext } from "../context/UserContext"
 import formImage from "../assets/Art.png"
 const LoginPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [redirect, setRedirect] = useState(false)
-
+  const { setUser } = useContext(UserContext)
   async function handleLoginSubmit(ev) {
     ev.preventDefault()
     try {
-      await axios.post("/login", { email, password })
+      const { data } = await axios.post("/login", { email, password })
+      setUser(data)
       alert("Login successful")
       setRedirect(true)
     } catch (e) {

@@ -88,7 +88,7 @@ const RegisterPage = () => {
           </form>
           <div className={Styles.bottomInput}>
             <p>Have an account?</p>
-            <Link to={"/login"}>Login</Link>
+            <Link to={"/"}>Login</Link>
           </div>
         </div>
       </div>

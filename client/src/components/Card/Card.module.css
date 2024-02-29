@@ -8,15 +8,62 @@
   margin-left: 15px;
   margin-right: 5px;
   margin-bottom: 10px;
+  
 }
 
 .card_top {
   display: flex;
   gap: 5px;
+  /* position: relative; */
 }
 
-.card_labels {
-  flex: 1;
+.card_lables {
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.dropdown{
+  background-color: gray;
+  border-radius: 15px;
+  padding: 4px;
+}
+
+.dropdown_items{
+  background-color: gray;
+}
+
+.card_footer{
+  display: flex;
+  justify-content: space-between;
+}
+
+.card_tab{
+  display: flex;
+  gap: 8px;
+  font-size: 8px;
+  color: #767575;
+  font-weight: 600;
+}
+
+.card_tab div{
+  border-radius: 5px;
+  background-color: #EEECEC;
+  text-align: center;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.popup_inner {
+  background-color: #fff;
+  max-width: 140px;
+  height: 120px;
+  padding: 32px;
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;  
+  /* position: absolute;
+  top: 76%;
+  left: 57%; */
+  border: 1px solid rebeccapurple;
 }

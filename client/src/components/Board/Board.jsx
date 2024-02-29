@@ -1,26 +1,30 @@
-import React, { useState } from "react"
 import Styles from "./Board.module.css"
 import { FaPlus } from "react-icons/fa"
 import { BiWindows } from "react-icons/bi"
 import Card from "../Card/Card"
 import TodoPopUp from "../TodoPopUp/TodoPopUp"
+import { useContext } from "react"
+import { UserContext } from "../../context/UserContext"
 
 const Board = ({ name }) => {
-  const [showPopup, setShowPopup] = useState(false)
-  const handleOnclose = () => setShowPopup(false)
+  const { setShowCheckPopup, toDoCards, backlogCards, inProgress, doneCards } =
+    useContext(UserContext)
+
   return (
     <div className={Styles.board}>
       <div className={Styles.top}>
         <p className={Styles.title}>{name}</p>
-        <FaPlus onClick={() => setShowPopup(true)} />
-        <BiWindows />
+        {name === "To do" && <FaPlus onClick={() => setShowCheckPopup(true)} />}
+        <BiWindows onClick={() => checkCollapse()} />
       </div>
       <div className={`${Styles.cards} ${Styles.scroll}`}>
-        <Card />
-        <Card />
-        <Card />
+        {name === "To do" && <Card card={toDoCards} />}
+        {name === "Backlog" && <Card card={backlogCards} />}
+        {name === "In Progress" && <Card card={inProgress} />}
+        {name === "Done" && <Card card={doneCards} />}
       </div>
-      <TodoPopUp Onclose={handleOnclose} visible={showPopup} />
+
+      <TodoPopUp />
     </div>
   )
 }

@@ -5,6 +5,19 @@ export const UserContext = createContext({})
 export function UserContextProvider({ children }) {
   const [user, setUser] = useState(null)
   const [ready, setReady] = useState(false)
+  const [showCheckPopup, setShowCheckPopup] = useState(false)
+  const [showLogPopup, setShowLogPopup] = useState(false)
+  const [showEditPopup, setShowEditPopup] = useState(false)
+  const [showDelPopup, setShowDelPopup] = useState(false)
+  const [toDoCards, setToDoCards] = useState([])
+  const [backlogCards, setBacklogCards] = useState([])
+  const [inProgress, setInProgress] = useState([])
+  const [doneCards, setDoneCards] = useState([])
+  const [title, setTitle] = useState("")
+  const [priority, setPriority] = useState("")
+  const [duedate, setDuedate] = useState(null)
+  const [inputs, setInputs] = useState([])
+  const [selectedId, setSelectedId] = useState(null)
   useEffect(() => {
     if (!user) {
       axios.get("/profile").then(({ data }) => {
@@ -13,8 +26,46 @@ export function UserContextProvider({ children }) {
       })
     }
   }, [])
+
+  useEffect(() => {
+    axios.get("/cards").then(({ data }) => {
+      setToDoCards(data)
+    })
+  }, [])
   return (
-    <UserContext.Provider value={{ user, setUser, ready }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        ready,
+        showCheckPopup,
+        setShowCheckPopup,
+        showLogPopup,
+        setShowLogPopup,
+        showEditPopup,
+        setShowEditPopup,
+        showDelPopup,
+        setShowDelPopup,
+        toDoCards,
+        setToDoCards,
+        backlogCards,
+        setBacklogCards,
+        inProgress,
+        setInProgress,
+        doneCards,
+        setDoneCards,
+        setTitle,
+        setPriority,
+        setDuedate,
+        setInputs,
+        title,
+        priority,
+        duedate,
+        inputs,
+        selectedId,
+        setSelectedId
+      }}
+    >
       {children}
     </UserContext.Provider>
   )
