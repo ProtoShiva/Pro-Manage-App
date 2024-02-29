@@ -5,6 +5,7 @@ import Styles from "./Card.module.css"
 import { UserContext } from "../../context/UserContext"
 import { v4 as uuidv4 } from "uuid"
 import axios from "axios"
+import { format, parseISO, isPast } from "date-fns"
 import DeletePopup from "../DeletePopup/DeletePopup"
 import TodoPopUp from "../TodoPopUp/TodoPopUp"
 
@@ -76,13 +77,15 @@ const Card = ({ card }) => {
 
   const handleUpdate = async (id) => {
     setSelectedId(id)
-    await axios.get(`/cards/${id}`).then((response) => {
-      const { data } = response
-      setTitle(data.title)
-      setPriority(data.priority)
-      setDuedate(data.duedate)
-      setInputs(data.inputs)
-    })
+    const response = await axios.get(`/cards/${id}`)
+    const cardData = response.data
+    console.log(cardData)
+
+    // Set the fetched data in your state variables
+    setTitle(cardData.title)
+    setPriority(cardData.priority)
+    setDuedate(cardData.duedate)
+    setInputs(cardData.inputs)
 
     togglePopup(id)
     setShowCheckPopup(true)
@@ -91,6 +94,19 @@ const Card = ({ card }) => {
   const handleShare = async (id) => {
     togglePopup(id)
   }
+
+  const handleCss = (p) => {
+    switch (p) {
+      case "HIGH PRIORITY":
+        return Styles.highPriority
+      case "MODERATE PRIORITY":
+        return Styles.mediumPriority
+      case "LOW PRIORITY":
+        return Styles.lowPriority
+      default:
+        return {}
+    }
+  }
   return (
     <div>
       {card.length > 0 &&
@@ -98,8 +114,14 @@ const Card = ({ card }) => {
           <div className={Styles.card} key={uuidv4()}>
             <div className={Styles.card_top}>
               <div className={Styles.card_lables}>
-                {c.priority}
-                <BsThreeDots onClick={() => togglePopup(c._id)} />
+                <div id={Styles.prior}>
+                  {" "}
+                  <span className={handleCss(c.priority)}>&bull;</span>
+                  <p>{c.priority}</p>
+                </div>
+                <div className={Styles.threeDot}>
+                  <BsThreeDots onClick={() => togglePopup(c._id)} />
+                </div>
               </div>
               {showPopup[c._id] && (
                 <div className={Styles.popup_inner}>
@@ -110,22 +132,31 @@ const Card = ({ card }) => {
               )}
             </div>
             <div className={Styles.card_title}>{c.title}</div>
-            <div className="dropdown">
-              <button onClick={() => toggleDropdown(c._id)}>
-                Click Me{" "}
-                {openDropdownId.includes(c._id) ? (
-                  <MdKeyboardArrowUp />
-                ) : (
-                  <MdKeyboardArrowDown />
-                )}
+            <div>
+              <button
+                className={Styles.dropdown}
+                onClick={() => toggleDropdown(c._id)}
+              >
+                Checklist (0/3){" "}
+                <span id={Styles.arrow}>
+                  {openDropdownId.includes(c._id) ? (
+                    <MdKeyboardArrowUp />
+                  ) : (
+                    <MdKeyboardArrowDown />
+                  )}
+                </span>
               </button>
               {openDropdownId.includes(c._id) && (
-                <ul className="dropdown-items">
+                <ul className={Styles.dropdownItems}>
                   {c.inputs.map((item) => (
-                    <p key={uuidv4()}>
-                      <input type="checkbox" selected={item.checked} />
+                    <div key={uuidv4()} className={Styles.items}>
+                      <input
+                        type="checkbox"
+                        selected={item.checked}
+                        className={Styles.checkbox}
+                      />
                       {item.value}
-                    </p>
+                    </div>
                   ))}
                 </ul>
               )}
@@ -134,7 +165,13 @@ const Card = ({ card }) => {
             <TodoPopUp />
             <div className={Styles.card_footer}>
               {" "}
-              <div>{c.duedate}</div>
+              <div
+                className={`${Styles.date} ${
+                  isPast(parseISO(c.duedate)) ? "Styles.overdue" : ""
+                }`}
+              >
+                {format(parseISO(c.duedate), "MMM do")}
+              </div>
               <div className={Styles.card_tab}>
                 <div onClick={() => toggleCard(c)}>BACKLOG</div>
                 <div onClick={() => moveToProgress(c)}>PROGRESS</div>

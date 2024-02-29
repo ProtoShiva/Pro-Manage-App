@@ -3,6 +3,7 @@ import Styles from "./TodoPopUp.module.css"
 import { UserContext } from "../../context/UserContext"
 import { FaPlus } from "react-icons/fa6"
 import { MdDelete } from "react-icons/md"
+import { v4 as uuidv4 } from "uuid"
 import axios from "axios"
 
 const TodoPopUp = () => {
@@ -20,10 +21,6 @@ const TodoPopUp = () => {
     setSelectedId,
     selectedId
   } = useContext(UserContext)
-  // const [title, setTitle] = useState("")
-  // const [priority, setPriority] = useState("")
-  // const [duedate, setDuedate] = useState(null)
-  // const [inputs, setInputs] = useState([])
 
   if (!showCheckPopup) {
     return null
@@ -90,6 +87,7 @@ const TodoPopUp = () => {
           <input
             type="text"
             placeholder="Enter Task Title"
+            value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
@@ -109,7 +107,7 @@ const TodoPopUp = () => {
         </div>
         <div className={Styles.checklist}>
           <p>
-            Chekclist (0/0) <span>*</span>
+            Checklist (0/0) <span>*</span>
           </p>
           <div>
             <div className={Styles.checklist}>
@@ -124,7 +122,6 @@ const TodoPopUp = () => {
                       }
                     />
                     <input
-                      key={input.id}
                       type="text"
                       value={input.value}
                       onChange={(event) => handleChange(event, input.id)}
@@ -144,7 +141,11 @@ const TodoPopUp = () => {
         </div>
         <div className={Styles.todo_footer}>
           <div id={Styles.date}>
-            <input type="date" onChange={(e) => setDuedate(e.target.value)} />
+            <input
+              type="date"
+              value={duedate}
+              onChange={(e) => setDuedate(e.target.value)}
+            />
           </div>
           <div>
             <p id={Styles.cancel} onClick={() => setShowCheckPopup(false)}>

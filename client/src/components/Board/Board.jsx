@@ -14,8 +14,9 @@ const Board = ({ name }) => {
     <div className={Styles.board}>
       <div className={Styles.top}>
         <p className={Styles.title}>{name}</p>
+
         {name === "To do" && <FaPlus onClick={() => setShowCheckPopup(true)} />}
-        <BiWindows onClick={() => checkCollapse()} />
+        <BiWindows onClick={() => checkCollapse()} id={Styles.collapse} />
       </div>
       <div className={`${Styles.cards} ${Styles.scroll}`}>
         {name === "To do" && <Card card={toDoCards} />}

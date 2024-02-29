@@ -1,43 +1,63 @@
 import React, { useContext, useState } from "react"
-import { Link, Navigate } from "react-router-dom"
+import { Link, Navigate, useLocation, useParams } from "react-router-dom"
 import { VscWindow } from "react-icons/vsc"
 import { LuDatabase } from "react-icons/lu"
 import { IoSettingsOutline } from "react-icons/io5"
 import { FiCodesandbox } from "react-icons/fi"
 import Styles from "./Sidebar.module.css"
-import { IoLogOutOutline } from "react-icons/io5"
+import { MdOutlineLogout } from "react-icons/md"
 import { UserContext } from "../../context/UserContext"
 import Logout from "../Logout/Logout"
 import EditPopup from "../EditPopup/EditPopup"
 const Sidebar = () => {
   const { setShowLogPopup } = useContext(UserContext)
+  let location = useLocation()
+  let subpage = location.pathname
 
+  const LinkClasses = (type) => {
+    if (type === subpage) {
+      return Styles.sidebar_bg
+    }
+  }
   return (
     <div className={Styles.container}>
       <div className={Styles.inner_box}>
         <Link to={"/dashboard"}>
-          <p>
+          <p className={Styles.sidebar_logo}>
             <FiCodesandbox className={Styles.logo} />
             Pro Manage
           </p>
         </Link>
         <ul className={Styles.sideicons}>
-          <Link to={"/dashboard/board"}>
+          <Link
+            className={`${LinkClasses("/dashboard/board")} ${Styles.sideLeft}`}
+            to={"/dashboard/board"}
+          >
             <VscWindow className={Styles.logo} />
             Board
           </Link>
-          <Link to={"/dashboard/analytics"}>
+          <Link
+            className={`${LinkClasses("/dashboard/analytics")} ${
+              Styles.sideLeft
+            }`}
+            to={"/dashboard/analytics"}
+          >
             <LuDatabase className={Styles.logo} />
             Analytics
           </Link>
-          <Link to={"/dashboard/settings"}>
+          <Link
+            className={`${LinkClasses("/dashboard/settings")} ${
+              Styles.sideLeft
+            }`}
+            to={"/dashboard/settings"}
+          >
             <IoSettingsOutline className={Styles.logo} />
             Settings
           </Link>
         </ul>
       </div>
       <div className={Styles.logout}>
-        <IoLogOutOutline />
+        <MdOutlineLogout className={Styles.logo} />
         <span onClick={() => setShowLogPopup(true)}>Log out</span>
       </div>
       <EditPopup />

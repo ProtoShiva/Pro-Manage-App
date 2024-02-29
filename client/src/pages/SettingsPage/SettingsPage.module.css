@@ -2,28 +2,6 @@
   display: flex;
 }
 
-.image_div {
-  background-color: #17a2b8;
-  width: 60vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.image_div h1 {
-  color: #fff;
-  position: relative;
-  top: -60px;
-}
-
-.image_div p {
-  color: #fff;
-  position: relative;
-  top: -50px;
-}
-
 .form {
   display: flex;
   flex-direction: column;
@@ -32,7 +10,7 @@
 }
 
 .formContainer {
-  width: 60%;
+  width: 30%;
   height: 80%;
   display: flex;
   flex-direction: column;
@@ -41,15 +19,12 @@
 .formContainer h2 {
   font-size: 33px;
   font-weight: 600;
-  margin: 0 auto;
+  margin-top: 30px;
   color: #343434;
 }
 .form_div {
-  width: 40vw;
+  width: 85vw;
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .inputField {
@@ -93,29 +68,4 @@
   font-size: 1.25rem;
   margin-top: 50px;
   border: none;
-}
-
-.bottomInput {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 25px;
-}
-
-.bottomInput p {
-  color: gray;
-  font-size: 1.15rem;
-}
-
-.bottom_log {
-  border: 1px solid #17a2b8;
-  width: 100%;
-  border-radius: 20px;
-  height: 2.5rem;
-  text-align: center;
-  padding-top: 10px;
-  text-decoration: none;
-  color: #17a2b8;
-  margin-top: 16px;
 }

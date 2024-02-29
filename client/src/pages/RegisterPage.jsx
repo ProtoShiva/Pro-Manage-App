@@ -6,6 +6,7 @@ import { FaRegUser } from "react-icons/fa"
 import { MdOutlineMailOutline } from "react-icons/md"
 import { MdOutlineLock } from "react-icons/md"
 import { MdOutlineRemoveRedEye } from "react-icons/md"
+import { FiEyeOff } from "react-icons/fi"
 import formImage from "../assets/Art.png"
 const RegisterPage = () => {
   const [name, setName] = useState("")
@@ -13,6 +14,8 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState("")
+  const [showPassword, setShowPassword] = useState(true)
+  const [showConfirm, setShowConfirm] = useState(true)
   const registerUser = async (ev) => {
     ev.preventDefault()
     try {
@@ -66,29 +69,51 @@ const RegisterPage = () => {
             <div className={Styles.inputField}>
               <MdOutlineLock className={Styles.icons} />
               <input
-                type="text"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
               />
-              <MdOutlineRemoveRedEye className={Styles.passIcons} />
+              {showPassword ? (
+                <MdOutlineRemoveRedEye
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={Styles.passIcons}
+                />
+              ) : (
+                <FiEyeOff
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={Styles.passIcons}
+                />
+              )}
             </div>
             <div className={Styles.inputField}>
               <MdOutlineLock className={Styles.icons} />
               <input
-                type="text"
+                type={showConfirm ? "text" : "password"}
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(ev) => setConfirmPassword(ev.target.value)}
               />
-              <MdOutlineRemoveRedEye className={Styles.passIcons} />
+              {showConfirm ? (
+                <MdOutlineRemoveRedEye
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  className={Styles.passIcons}
+                />
+              ) : (
+                <FiEyeOff
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  className={Styles.passIcons}
+                />
+              )}
             </div>
             <p>{error}</p>
             <button id={Styles.regBtn}>Register</button>
           </form>
           <div className={Styles.bottomInput}>
             <p>Have an account?</p>
-            <Link to={"/"}>Login</Link>
+            <Link to={"/"} className={Styles.bottom_log}>
+              Login
+            </Link>
           </div>
         </div>
       </div>

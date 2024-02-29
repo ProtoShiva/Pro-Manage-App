@@ -5,6 +5,7 @@ import { Navigate, Link } from "react-router-dom"
 import { MdOutlineMailOutline } from "react-icons/md"
 import { MdOutlineLock } from "react-icons/md"
 import { MdOutlineRemoveRedEye } from "react-icons/md"
+import { FiEyeOff } from "react-icons/fi"
 import { UserContext } from "../context/UserContext"
 import formImage from "../assets/Art.png"
 const LoginPage = () => {
@@ -12,6 +13,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("")
   const [redirect, setRedirect] = useState(false)
   const { setUser } = useContext(UserContext)
+  const [showPassword, setShowPassword] = useState(false)
   async function handleLoginSubmit(ev) {
     ev.preventDefault()
     try {
@@ -51,19 +53,31 @@ const LoginPage = () => {
             <div className={Styles.inputField}>
               <MdOutlineLock className={Styles.icons} />
               <input
-                type="text"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
                 placeholder="Password"
               />
-              <MdOutlineRemoveRedEye className={Styles.passIcons} />
+              {showPassword ? (
+                <MdOutlineRemoveRedEye
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={Styles.passIcons}
+                />
+              ) : (
+                <FiEyeOff
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={Styles.passIcons}
+                />
+              )}
             </div>
             <button id={Styles.regBtn}>Login</button>
           </form>
 
           <div className={Styles.bottomInput}>
             <p>Have no account yet?</p>
-            <Link to={"/register"}>Register now</Link>
+            <Link to={"/register"} className={Styles.bottom_log}>
+              Register now
+            </Link>
           </div>
         </div>
       </div>
