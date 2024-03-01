@@ -92,52 +92,66 @@ const TodoPopUp = () => {
           />
         </div>
         <div className={Styles.priority}>
-          <p>
+          <p className={Styles.priorityTitle}>
             Select Priority <span>*</span>
           </p>
-          <div onClick={() => setPriority("HIGH PRIORITY")}>
-            <span>&bull;</span>HIGH PRIORITY
+          <div
+            onClick={() => setPriority("HIGH PRIORITY")}
+            className={`${Styles.priorityName} ${
+              priority === "HIGH PRIORITY" ? Styles.selectedPriority : ""
+            }`}
+          >
+            <span>&bull;</span> <p>HIGH PRIORITY</p>
           </div>
-          <div onClick={() => setPriority("MODERATE PRIORITY")}>
-            <span id={Styles.mop}>&bull;</span>MODERATE PRIORITY
+          <div
+            onClick={() => setPriority("MODERATE PRIORITY")}
+            className={`${Styles.priorityName} ${
+              priority === "MODERATE PRIORITY" ? Styles.selectedPriority : ""
+            }`}
+          >
+            <span id={Styles.mop}>&bull;</span> <p>MODERATE PRIORITY</p>
           </div>
-          <div onClick={() => setPriority("LOW PRIORITY")}>
-            <span id={Styles.lop}>&bull;</span>LOW PRIORITY
+          <div
+            onClick={() => setPriority("LOW PRIORITY")}
+            className={`${Styles.priorityName} ${
+              priority === "LOW PRIORITY" ? Styles.selectedPriority : ""
+            }`}
+          >
+            <span id={Styles.lop}>&bull;</span> <p>LOW PRIORITY</p>
           </div>
         </div>
-        <div className={Styles.checklist}>
+        <div className={Styles.CheckTitle}>
           <p>
             Checklist (0/0) <span>*</span>
           </p>
-          <div>
-            <div className={Styles.checklist}>
-              {inputs.map((input) => (
-                <div className={Styles.inputs}>
-                  <div className={Styles.input_two}>
-                    <input
-                      type="checkbox"
-                      checked={input.checked}
-                      onChange={(event) =>
-                        handleCheckboxChange(event, input.id)
-                      }
-                    />
-                    <input
-                      type="text"
-                      value={input.value}
-                      onChange={(event) => handleChange(event, input.id)}
-                      placeholder="Enter value..."
-                    />
-                  </div>
+        </div>
 
-                  <MdDelete />
-                </div>
-              ))}
+        <div className={Styles.checklist}>
+          {inputs.map((input) => (
+            <div className={Styles.inputs}>
+              <div className={Styles.input_two}>
+                <input
+                  type="checkbox"
+                  checked={input.checked}
+                  onChange={(event) => handleCheckboxChange(event, input.id)}
+                />
+                <input
+                  className={Styles.mainInput}
+                  type="text"
+                  value={input.value}
+                  onChange={(event) => handleChange(event, input.id)}
+                  placeholder="Enter value..."
+                />
+              </div>
+              <div className={Styles.deleteBtn}>
+                <MdDelete />
+              </div>
             </div>
-            <div className={Styles.checkInput} onClick={addInput}>
-              <FaPlus />
-              <p>Add New</p>
-            </div>
-          </div>
+          ))}
+        </div>
+        <div className={Styles.checkInput} onClick={addInput}>
+          <FaPlus />
+          <p>Add New</p>
         </div>
         <div className={Styles.todo_footer}>
           <div id={Styles.date}>

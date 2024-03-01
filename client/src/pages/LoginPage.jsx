@@ -44,7 +44,8 @@ const LoginPage = () => {
             <div className={Styles.inputField}>
               <MdOutlineMailOutline className={Styles.icons} />
               <input
-                type="text"
+                className={Styles.mainInput}
+                type="email"
                 value={email}
                 onChange={(ev) => setEmail(ev.target.value)}
                 placeholder="Email"
@@ -53,6 +54,7 @@ const LoginPage = () => {
             <div className={Styles.inputField}>
               <MdOutlineLock className={Styles.icons} />
               <input
+                className={Styles.mainInput}
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}

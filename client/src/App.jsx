@@ -8,6 +8,7 @@ import AnalyticsPage from "./pages/AnalyticsPage/AnalyticsPage"
 import SettingsPage from "./pages/SettingsPage/SettingsPage"
 import { UserContextProvider } from "./context/UserContext"
 import Layout from "./layout/Layout.jsx"
+import SharePage from "./pages/SharePage/SharePage.jsx"
 axios.defaults.baseURL = "http://localhost:3000"
 axios.defaults.withCredentials = true
 const App = () => {
@@ -18,10 +19,11 @@ const App = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<Layout />}>
           <Route index element={<Dashboard />} />
-          <Route path="/dashboard/board" element={<Dashboard />} />
+          <Route path="/dashboard/" element={<Dashboard />} />
           <Route path="/dashboard/analytics" element={<AnalyticsPage />} />
           <Route path="/dashboard/settings" element={<SettingsPage />} />
         </Route>
+        <Route path="/info" element={<SharePage />} />
       </Routes>
     </UserContextProvider>
   )

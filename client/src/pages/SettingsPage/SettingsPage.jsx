@@ -1,27 +1,41 @@
 import Styles from "./SettingsPage.module.css"
 import axios from "axios"
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import { MdOutlineLock } from "react-icons/md"
 import { MdOutlineRemoveRedEye } from "react-icons/md"
 import { FiEyeOff } from "react-icons/fi"
 import { FaRegUser } from "react-icons/fa"
 import { UserContext } from "../../context/UserContext"
+
 const SettingsPage = () => {
   const [name, setName] = useState("")
+  const [error, setError] = useState("")
   const [oldPassword, setOldPassword] = useState("")
-  const { setUser } = useContext(UserContext)
+  const { user } = useContext(UserContext)
   const [showPassword, setShowPassword] = useState(true)
   const [showConfirm, setShowConfirm] = useState(true)
   const [newPassword, setNewPassword] = useState("")
-  async function handleLoginSubmit(ev) {
-    ev.preventDefault()
+  const userId = user?._id
+  const handleUpdate = async (event) => {
+    event.preventDefault()
+    // if (password !== confirmPassword) {
+    //   setError("Password need to match")
+    //   return
+    // }
+    const updatedUser = {}
+    if (name) updatedUser.name = name
+    if (newPassword) updatedUser.password = newPassword
+
     try {
-      const { data } = await axios.post("/login", { email, password })
-      setUser(data)
-      alert("Login successful")
-      setRedirect(true)
-    } catch (e) {
-      alert("Login failed")
+      const response = await axios.put(`/userchange/${userId}`, updatedUser)
+
+      if (response.status === 200) {
+        alert("User updated successfully")
+      } else {
+        alert("Error updating user")
+      }
+    } catch (error) {
+      console.error("Error updating user", error)
     }
   }
 
@@ -30,13 +44,13 @@ const SettingsPage = () => {
       <div className={Styles.form_div}>
         <div className={Styles.formContainer}>
           <h2>Settings</h2>
-          <form className={Styles.form} onSubmit={handleLoginSubmit}>
+          <form className={Styles.form} onSubmit={handleUpdate}>
             <div className={Styles.inputField}>
               <FaRegUser className={Styles.icons} />
               <input
                 className={Styles.mainInput}
                 type="text"
-                placeholder="Name"
+                placeholder={user?.name}
                 value={name}
                 onChange={(ev) => setName(ev.target.value)}
               />
@@ -83,6 +97,7 @@ const SettingsPage = () => {
                 />
               )}
             </div>
+            {/* <p>{error}</p> */}
             <button id={Styles.regBtn}>Update</button>
           </form>
         </div>

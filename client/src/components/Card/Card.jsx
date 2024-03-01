@@ -8,26 +8,29 @@ import axios from "axios"
 import { format, parseISO, isPast } from "date-fns"
 import DeletePopup from "../DeletePopup/DeletePopup"
 import TodoPopUp from "../TodoPopUp/TodoPopUp"
+import { useNavigate } from "react-router-dom"
+import { toast, ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 const Card = ({ card }) => {
-  const [openDropdownId, setOpenDropdownId] = useState([])
   const [showPopup, setShowPopup] = useState(false)
+  const navigate = useNavigate()
   const {
     setToDoCards,
-    toDoCards,
     setShowCheckPopup,
     setShowDelPopup,
     setBacklogCards,
-    backlogCards,
-    inProgress,
     setInProgress,
-    doneCards,
     setDoneCards,
     setTitle,
     setDuedate,
     setPriority,
     setInputs,
     setSelectedId,
+    openDropdownId,
+    setOpenDropdownId,
+    doneCards,
+    user,
     title,
     priority,
     duedate,
@@ -46,42 +49,31 @@ const Card = ({ card }) => {
     setShowPopup((prev) => ({ ...prev, [id]: !prev[id] }))
   }
 
-  // const moveToBacklog = (card) => {
-  //   setToDoCards(toDoCards.filter((c) => c._id !== card._id))
-  //   setBacklogCards([...backlogCards, card])
-  // }
-
-  const toggleCard = (card) => {
-    if (toDoCards.some((toDoCard) => toDoCard._id === card._id)) {
-      setToDoCards(toDoCards.filter((c) => c._id !== card._id))
-      setBacklogCards([...backlogCards, card])
-    } else {
-      setBacklogCards(backlogCards.filter((c) => c._id !== card._id))
-      setToDoCards([...toDoCards, card])
-    }
+  const updateCardStatus = async (card, newStatus) => {
+    await axios.put(`/status/${card}`, { status: newStatus }).then(() => {
+      fetchCards()
+    })
   }
 
-  const moveToProgress = (card) => {
-    setToDoCards(toDoCards.filter((c) => c._id !== card._id))
-    setInProgress([...inProgress, card])
+  const fetchCards = () => {
+    axios.get("/cards").then(({ data }) => {
+      setToDoCards(data.filter((card) => card.status === "To Do"))
+      setBacklogCards(data.filter((card) => card.status === "BACKLOG"))
+      setInProgress(data.filter((card) => card.status === "PROGRESS"))
+      setDoneCards(data.filter((card) => card.status === "DONE"))
+    })
   }
-
-  const moveToDone = (card) => {
-    setToDoCards(toDoCards.filter((c) => c._id !== card._id))
-    setDoneCards([...doneCards, card])
-  }
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     togglePopup(id)
     setShowDelPopup(true)
+    await axios.delete(`/user_cards/${id}`)
   }
 
   const handleUpdate = async (id) => {
     setSelectedId(id)
     const response = await axios.get(`/cards/${id}`)
     const cardData = response.data
-    console.log(cardData)
 
-    // Set the fetched data in your state variables
     setTitle(cardData.title)
     setPriority(cardData.priority)
     setDuedate(cardData.duedate)
@@ -93,6 +85,14 @@ const Card = ({ card }) => {
 
   const handleShare = async (id) => {
     togglePopup(id)
+    navigate("/info")
+    const response = await axios.get(`/cards/${id}`)
+    const cardData = response.data
+
+    setTitle(cardData.title)
+    setPriority(cardData.priority)
+    setDuedate(cardData.duedate)
+    setInputs(cardData.inputs)
   }
 
   const handleCss = (p) => {
@@ -106,6 +106,12 @@ const Card = ({ card }) => {
       default:
         return {}
     }
+  }
+
+  const calcLen = (c) => {
+    return c.inputs.filter((i) => {
+      return i.checked === true
+    })
   }
   return (
     <div>
@@ -125,19 +131,22 @@ const Card = ({ card }) => {
               </div>
               {showPopup[c._id] && (
                 <div className={Styles.popup_inner}>
-                  <p onClick={() => handleDelete(c._id)}>Delete</p>
-                  <p onClick={() => handleUpdate(c._id)}>Update</p>
+                  <p onClick={() => handleUpdate(c._id)}>Edit</p>
                   <p onClick={() => handleShare(c._id)}>Share</p>
+                  <p className={Styles.del} onClick={() => handleDelete(c._id)}>
+                    Delete
+                  </p>
                 </div>
               )}
             </div>
+            <DeletePopup cardId={c._id} />
             <div className={Styles.card_title}>{c.title}</div>
             <div>
               <button
                 className={Styles.dropdown}
                 onClick={() => toggleDropdown(c._id)}
               >
-                Checklist (0/3){" "}
+                Checklist {calcLen(c).length}/{c.inputs.length}){" "}
                 <span id={Styles.arrow}>
                   {openDropdownId.includes(c._id) ? (
                     <MdKeyboardArrowUp />
@@ -152,7 +161,7 @@ const Card = ({ card }) => {
                     <div key={uuidv4()} className={Styles.items}>
                       <input
                         type="checkbox"
-                        selected={item.checked}
+                        checked={item.checked}
                         className={Styles.checkbox}
                       />
                       {item.value}
@@ -161,21 +170,29 @@ const Card = ({ card }) => {
                 </ul>
               )}
             </div>
-            <DeletePopup cardId={c._id} />
+
             <TodoPopUp />
             <div className={Styles.card_footer}>
               {" "}
               <div
                 className={`${Styles.date} ${
-                  isPast(parseISO(c.duedate)) ? "Styles.overdue" : ""
-                }`}
+                  typeof c?.duedate === "string" && isPast(parseISO(c?.duedate))
+                    ? Styles.overdue
+                    : ""
+                } ${c.status === "DONE" ? Styles.doneCol : ""}`}
               >
-                {format(parseISO(c.duedate), "MMM do")}
+                {typeof c?.duedate === "string"
+                  ? format(parseISO(c?.duedate), "MMM do")
+                  : ""}
               </div>
               <div className={Styles.card_tab}>
-                <div onClick={() => toggleCard(c)}>BACKLOG</div>
-                <div onClick={() => moveToProgress(c)}>PROGRESS</div>
-                <div onClick={() => moveToDone(c)}>DONE</div>
+                <div onClick={() => updateCardStatus(c._id, "BACKLOG")}>
+                  BACKLOG
+                </div>
+                <div onClick={() => updateCardStatus(c._id, "PROGRESS")}>
+                  PROGRESS
+                </div>
+                <div onClick={() => updateCardStatus(c._id, "DONE")}>DONE</div>
               </div>
             </div>
           </div>

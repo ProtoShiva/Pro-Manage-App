@@ -13,7 +13,7 @@
 .card_top {
   display: flex;
   gap: 5px;
-  /* position: relative; */
+  position: relative;
 }
 
 .card_lables {
@@ -92,7 +92,12 @@
 }
 
 .overdue {
-  background-color: red;
+  background-color: #cf3636;
+  color: white;
+}
+.doneCol {
+  background-color: #63c05b;
+  color: #fff;
 }
 .card_tab {
   display: flex;
@@ -112,16 +117,17 @@
 
 .popup_inner {
   background-color: #fff;
-  max-width: 140px;
+  max-width: 150px;
   height: 120px;
-  padding: 32px;
+  padding: 22px;
   width: 100%;
   border-radius: 20px;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
-  /* position: absolute;
-  top: 76%;
-  left: 57%; */
-  border: 1px solid rebeccapurple;
+  position: absolute;
+  z-index: 9999;
+  right: -3%;
+  top: 50%;
+  cursor: pointer;
 }
 
 .highPriority {
@@ -138,4 +144,9 @@
 
 .threeDot {
   padding-top: 5px;
+  cursor: pointer;
+}
+
+.del {
+  color: #cf3636;
 }

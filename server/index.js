@@ -99,6 +99,18 @@ app.get("/cards", (req, res) => {
   })
 })
 
+app.get("/sortedcard/:", async (req, res) => {
+  try {
+    const { userId } = req.params
+    const { filter } = req.body
+    const cards = await Check.find({ filter, _id: userId }).exec()
+    res.send(cards)
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).send("Something went wrong.")
+  }
+})
+
 app.get("/cards/:id", async (req, res) => {
   const { id } = req.params
   res.json(await Check.findById(id))
@@ -144,9 +156,67 @@ app.put("/card/:id", async (req, res) => {
   })
 })
 
-app.delete("/user_cards/:id", async (req, res) => {
+app.put("/status/:id", async (req, res) => {
+  const { jwtToken } = req.cookies
+  const { id } = req.params
+  const { status } = req.body
+
+  jwt.verify(jwtToken, process.env.jwtSecret, {}, async (err, userData) => {
+    if (err) {
+      console.error(err)
+      return res.status(500).json({ message: "Error verifying JWT" })
+    }
+
+    try {
+      const placeDoc = await Check.findById(id)
+
+      if (!placeDoc) {
+        return res.status(404).json({ message: "Card not found" })
+      }
+
+      if (userData.id !== placeDoc.owner.toString()) {
+        return res
+          .status(403)
+          .json({ message: "Not authorized to update this card" })
+      }
+
+      placeDoc.set({
+        status
+      })
+
+      await placeDoc.save()
+      const updatedCard = await Check.findOne({ _id: id })
+
+      res.status(200).json(updatedCard)
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ message: "Error updating card" })
+    }
+  })
+})
+
+app.put("/userchange/:id", async (req, res) => {
+  const { name, password } = req.body
+  const { id } = req.params
+  const user = await User.findById(id)
   try {
-    const result = await Check.findByIdAndDelete(req.params.id)
+    if (name) {
+      user.name = name
+    }
+    if (password) {
+      user.password = bcrypt.hashSync(password, bcryptSalt)
+    }
+    await user.save()
+    res.json({ msg: "User updated successfully" })
+  } catch (err) {
+    console.error(err.message)
+    res.status(500).send("Server error")
+  }
+})
+app.delete("/user_cards/:id", async (req, res) => {
+  const { id } = req.params
+  try {
+    const result = await Check.findByIdAndDelete(id)
 
     if (!result) {
       return res.status(404).send("Card with the given ID was not found.")

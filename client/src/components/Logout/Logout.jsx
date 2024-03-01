@@ -2,15 +2,35 @@ import { useContext, useState } from "react"
 import { UserContext } from "../../context/UserContext"
 import Styles from "./Logout.module.css"
 import { useNavigate } from "react-router-dom"
+import { toast, ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 import axios from "axios"
 const Logout = () => {
-  const { showLogPopup, setShowLogPopup } = useContext(UserContext)
+  const {
+    showLogPopup,
+    setShowLogPopup,
+    setDoneCards,
+    setToDoCards,
+    setInProgress,
+    setBacklogCards
+  } = useContext(UserContext)
   const navigate = useNavigate()
 
-  const logout = async () => {
+  const logout = () => {
     setShowLogPopup(false)
-    await axios.post("/logout")
-    navigate("/")
+    axios
+      .post("/logout")
+      .then(() => {
+        setToDoCards([])
+        setBacklogCards([])
+        setInProgress([])
+        setDoneCards([])
+        navigate("/")
+      })
+      .catch((error) => {
+        toast.error("error loggin out")
+        console.log(error)
+      })
   }
   if (!showLogPopup) {
     return null
@@ -29,6 +49,7 @@ const Logout = () => {
           </p>
         </div>
       </div>
+      <ToastContainer />
     </div>
   )
 }

@@ -7,17 +7,18 @@ export function UserContextProvider({ children }) {
   const [ready, setReady] = useState(false)
   const [showCheckPopup, setShowCheckPopup] = useState(false)
   const [showLogPopup, setShowLogPopup] = useState(false)
-  const [showEditPopup, setShowEditPopup] = useState(false)
   const [showDelPopup, setShowDelPopup] = useState(false)
   const [toDoCards, setToDoCards] = useState([])
   const [backlogCards, setBacklogCards] = useState([])
   const [inProgress, setInProgress] = useState([])
+  const [check, setCheck] = useState([])
   const [doneCards, setDoneCards] = useState([])
   const [title, setTitle] = useState("")
   const [priority, setPriority] = useState("")
   const [duedate, setDuedate] = useState(null)
   const [inputs, setInputs] = useState([])
   const [selectedId, setSelectedId] = useState(null)
+  const [openDropdownId, setOpenDropdownId] = useState([])
   useEffect(() => {
     if (!user) {
       axios.get("/profile").then(({ data }) => {
@@ -29,9 +30,14 @@ export function UserContextProvider({ children }) {
 
   useEffect(() => {
     axios.get("/cards").then(({ data }) => {
-      setToDoCards(data)
+      setCheck(data)
+      setToDoCards(data.filter((card) => card.status === "To Do"))
+      setBacklogCards(data.filter((card) => card.status === "BACKLOG"))
+      setInProgress(data.filter((card) => card.status === "PROGRESS"))
+      setDoneCards(data.filter((card) => card.status === "DONE"))
     })
-  }, [])
+  }, [check.length])
+
   return (
     <UserContext.Provider
       value={{
@@ -42,10 +48,10 @@ export function UserContextProvider({ children }) {
         setShowCheckPopup,
         showLogPopup,
         setShowLogPopup,
-        showEditPopup,
-        setShowEditPopup,
+        check,
         showDelPopup,
         setShowDelPopup,
+
         toDoCards,
         setToDoCards,
         backlogCards,
@@ -63,7 +69,9 @@ export function UserContextProvider({ children }) {
         duedate,
         inputs,
         selectedId,
-        setSelectedId
+        setSelectedId,
+        openDropdownId,
+        setOpenDropdownId
       }}
     >
       {children}

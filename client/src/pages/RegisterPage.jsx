@@ -51,6 +51,7 @@ const RegisterPage = () => {
             <div className={Styles.inputField}>
               <FaRegUser className={Styles.icons} />
               <input
+                className={Styles.mainInput}
                 type="text"
                 placeholder="Name"
                 value={name}
@@ -60,7 +61,8 @@ const RegisterPage = () => {
             <div className={Styles.inputField}>
               <MdOutlineMailOutline className={Styles.icons} />
               <input
-                type="text"
+                className={Styles.mainInput}
+                type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(ev) => setEmail(ev.target.value)}
@@ -69,6 +71,7 @@ const RegisterPage = () => {
             <div className={Styles.inputField}>
               <MdOutlineLock className={Styles.icons} />
               <input
+                className={Styles.mainInput}
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={password}
@@ -89,6 +92,7 @@ const RegisterPage = () => {
             <div className={Styles.inputField}>
               <MdOutlineLock className={Styles.icons} />
               <input
+                className={Styles.mainInput}
                 type={showConfirm ? "text" : "password"}
                 placeholder="Confirm Password"
                 value={confirmPassword}

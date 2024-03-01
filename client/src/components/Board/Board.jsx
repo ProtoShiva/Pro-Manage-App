@@ -7,8 +7,14 @@ import { useContext } from "react"
 import { UserContext } from "../../context/UserContext"
 
 const Board = ({ name }) => {
-  const { setShowCheckPopup, toDoCards, backlogCards, inProgress, doneCards } =
-    useContext(UserContext)
+  const {
+    setShowCheckPopup,
+    toDoCards,
+    backlogCards,
+    inProgress,
+    doneCards,
+    setOpenDropdownId
+  } = useContext(UserContext)
 
   return (
     <div className={Styles.board}>
@@ -16,7 +22,7 @@ const Board = ({ name }) => {
         <p className={Styles.title}>{name}</p>
 
         {name === "To do" && <FaPlus onClick={() => setShowCheckPopup(true)} />}
-        <BiWindows onClick={() => checkCollapse()} id={Styles.collapse} />
+        <BiWindows onClick={() => setOpenDropdownId([])} id={Styles.collapse} />
       </div>
       <div className={`${Styles.cards} ${Styles.scroll}`}>
         {name === "To do" && <Card card={toDoCards} />}

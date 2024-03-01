@@ -8,7 +8,6 @@ import Styles from "./Sidebar.module.css"
 import { MdOutlineLogout } from "react-icons/md"
 import { UserContext } from "../../context/UserContext"
 import Logout from "../Logout/Logout"
-import EditPopup from "../EditPopup/EditPopup"
 const Sidebar = () => {
   const { setShowLogPopup } = useContext(UserContext)
   let location = useLocation()
@@ -30,8 +29,8 @@ const Sidebar = () => {
         </Link>
         <ul className={Styles.sideicons}>
           <Link
-            className={`${LinkClasses("/dashboard/board")} ${Styles.sideLeft}`}
-            to={"/dashboard/board"}
+            className={`${LinkClasses("/dashboard")} ${Styles.sideLeft}`}
+            to={"/dashboard"}
           >
             <VscWindow className={Styles.logo} />
             Board
@@ -60,7 +59,6 @@ const Sidebar = () => {
         <MdOutlineLogout className={Styles.logo} />
         <span onClick={() => setShowLogPopup(true)}>Log out</span>
       </div>
-      <EditPopup />
       <Logout />
     </div>
   )

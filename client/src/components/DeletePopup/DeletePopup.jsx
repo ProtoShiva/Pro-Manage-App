@@ -13,7 +13,8 @@ const DeletePopup = ({ cardId }) => {
   const handleDelete = async (id) => {
     try {
       setShowDelPopup(false)
-      await axios.delete(`/user_cards/${id}`)
+      console.log(id)
+
       navigate("/dashboard")
     } catch (error) {
       console.log("cannot delete card")
@@ -22,7 +23,7 @@ const DeletePopup = ({ cardId }) => {
   return (
     <div className={Styles.main}>
       <div className={Styles.popup_inner}>
-        <p>Are you sure you want to Logout?</p>
+        <p>Are you sure you want to Delete?</p>
         <div>
           <p id={Styles.logout} onClick={() => handleDelete(cardId)}>
             Yes, Delete

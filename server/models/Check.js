@@ -1,23 +1,6 @@
 import mongoose from "mongoose"
 import { Schema } from "mongoose"
-const today = new Date()
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December"
-]
 
-// Format the date as "month name day"
-const formattedDate = `${monthNames[today.getMonth()]} ${today.getDate()}`
 const inputSchema = new Schema({
   id: String,
   value: String,
@@ -28,7 +11,12 @@ const checkSchema = new Schema(
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     title: String,
     priority: String,
-    duedate: { type: String, default: formattedDate },
+    status: {
+      type: String,
+      enum: ["To Do", "BACKLOG", "PROGRESS", "DONE"],
+      default: "To Do"
+    },
+    duedate: { type: String, default: "" },
     inputs: [inputSchema],
     checked: Boolean
   },
